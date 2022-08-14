@@ -1,2 +1,8 @@
-# r_review
-review basic r-programming concept
+R-review
+================
+
+# What is this repo?
+
+This is not R-basic training repo. Just a collection of some basic
+syntax (base R and tidyverse) for data processing and function
+development.
