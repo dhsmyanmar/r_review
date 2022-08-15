@@ -31,8 +31,8 @@ my_characters <- c("public", "policy", "101")
 # vectors of length 1
 tis_a_vector <- 1919
 technically_a_logical_vector <- TRUE
-```
 
+```
 
 
 
@@ -68,6 +68,7 @@ my_chrs <- character(4e5) # 400000
 # check here for scientific notification explination 
 # https://calculator.name/scientific-notation-to-decimal/4e-5 
 my_chrs[1:10]
+
 ```
 
 
