@@ -1,0 +1,166 @@
+---
+title: "dataframe"
+author: "Nicholus Tint Zaw"
+date: "2022-08-14"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# What we are going to cover in this exercise? 
+
+1. Creating a Data Frame
+1. Exploring dataframe
+1. Dataframe indexing 
+1. Running Functions on Dataframes
+
+
+
+# Creating a Data Frame 
+
+## as.dataframe 
+
+```{r}
+# Definition of vectors
+# ref: https://towardsdatascience.com/introduction-to-data-frames-in-r-b9a6302d9a56
+
+name <- c("Mercury", "Venus", "Earth", "Mars", 
+          "Jupiter", "Saturn", "Uranus", "Neptune")
+
+type <- c("Terrestrial planet", "Terrestrial planet", 
+          "Terrestrial planet", "Terrestrial planet", 
+          "Gas giant", "Gas giant", "Gas giant", "Gas giant")
+
+diameter <- c(0.382, 0.949, 1, 0.532, 11.209, 9.449, 4.007, 3.883)
+
+rotation <- c(58.64, -243.02, 1, 1.03, 0.41, 0.43, -0.72, 0.67)
+
+rings <- c(FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, TRUE, TRUE)
+
+# Create a data frame from the vectors
+planets_df <- data.frame(name, type, diameter, rotation, rings)
+
+```
+
+
+
+# Exploring dataframe 
+
+```{r}
+# import base-dataframe mtcars
+df <- mtcars 
+
+# view dataframe
+View(planets_df) 
+
+View(df)
+
+# return the column names
+names(planets_df)
+
+names(df)
+
+# print subset of dataframe
+head(df)
+
+tail(df)
+
+# dimension of dataframe
+dim(df) # returns the number of rows first, then the number of columns.
+
+# number of observation in dataframe
+length(df$mpg)
+
+# check below syntax 
+length(df)
+
+
+# class of dataframe and columns
+class(df)
+
+class(df$cyl)
+
+# check structure of dataframe 
+str(df) 
+str(planets_df)
+
+```
+
+
+
+# Dataframe indexing
+
+## using square brackets [] 
+
+```{r}
+# Return the value in the first row and first column:
+df[1,1]
+
+# Return the value in the second row and first column:
+df[2,1]
+
+# Return the value in the third row and second column:
+df[3,2]
+
+# Return all the values in the first row:
+df[1,]
+
+# Return the values in the first through seventh rows, in the second column:
+mtcars[1:7,2]
+
+```
+
+## use the $ operator to refer to the column within the dataframe 
+
+```{r}
+df$cyl
+
+df$wt
+```
+
+## Some advance indexing 
+
+application of condition in indexing 
+
+```{r}
+# return only the rows of data with cars that have four cylinders
+df[which(df$cyl == 4),]
+
+# return the cars with more than 90 horsepower.
+df[which(df$hp > 90),]
+
+# return the cars with high mpg and low weight.
+df[which(df$mpg > 28 & df$wt < 2),]
+
+# use indexing on just one column of a dataframe 
+df$mpg[which(df$cyl == 4)]
+
+# run functions on subsets of a column of data
+mean(df$mpg[which(df$cyl == 4)])
+
+```
+
+
+
+
+# Running Functions on Dataframes
+
+```{r}
+# How many values are in the mpg column?
+length(df$mpg)
+
+# What is the average horsepower of these cars?
+mean(df$hp)
+
+# What is the range of the weights of these cars?
+range(df$wt)
+
+# What is the frequency of cylinder type?
+table(df$cyl)
+
+table(planets_df$type)
+```
+
