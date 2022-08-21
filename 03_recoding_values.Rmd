@@ -1,0 +1,179 @@
+---
+title: "recode variables"
+author: "Nicholus Tint Zaw"
+date: "2022-08-20"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# What we are going to cover in this exercise? 
+
+1. ifelse()
+1. cut()
+1. case_when()
+
+# setting dataframe 
+
+```{r}
+df <- iris 
+names(iris)
+
+summary(df$Sepal.Length)
+min(df$Sepal.Length)
+max(df$Sepal.Length)
+mean(df$Sepal.Length)
+median(df$Sepal.Length)
+
+quantile(df$Sepal.Length)
+quantile(df$Sepal.Length, probs = 0.25) # 1st quartile 
+quantile(df$Sepal.Length, probs = 0.50) # 2nd quartile 
+quantile(df$Sepal.Length, probs = 0.75) # 3rd quartile 
+
+```
+
+
+# ifelse() 
+
+```{r}
+# with string variable 
+df$versicolor <- ifelse(df$Species == "versicolor", "versicolor", "other")
+
+# with numeric variable (>= median = long, < median = short)
+df$Sepal.Length.Dummy <- ifelse(df$Sepal.Length >= median(df$Sepal.Length), 
+                                "long", "short")
+
+# nested ifelse
+# (assigned Sepal.Length into three different quantile category)
+q1 <- quantile(df$Sepal.Length, probs = 0.25)
+q2 <- quantile(df$Sepal.Length, probs = 0.50)
+q3 <- quantile(df$Sepal.Length, probs = 0.75)
+
+df$Sepal.Length.Q <- ifelse(df$Sepal.Length < q1, 
+                            "1st quarter", 
+                            ifelse(df$Sepal.Length >= q1 & df$Sepal.Length < q2, 
+                                   "2nd quarter",
+                                   ifelse(df$Sepal.Length >= q2 & df$Sepal.Length < q3,
+                                          "3rd quarter", 
+                                          ifelse(df$Sepal.Length >= q3, 
+                                                 "4th quarter", NA)
+                                          )))
+
+table(df$Sepal.Length.Q)
+```
+
+
+# cut() 
+
+```{r}
+x <- 1:21
+
+quantile(x)
+
+```
+If single vector value was specified at `breaks` parameter, it will equally divided the interested vectors into the number of category specified at `breaks` parameter. 
+
+```{r}
+cut(x, 3)
+cut(x, 3, dig.lab = 4, ordered = TRUE) # order the levels 
+
+```
+
+
+We can specify the interval criteria by using vector in `breaks` parameter. 
+
+```{r}
+# check the result! is that what we want? 
+cut(x, breaks = c(7, 14, 21))
+
+# revised the syntax a little bit and check the result!
+cut(x, breaks = c(1, 7, 14, 21))
+
+cut(x, breaks = c(0, 7, 14, 21))
+cut(x, breaks = c(1, 7, 14, 21), include.lowest = TRUE)
+
+```
+
+
+```{r}
+quantile(x)
+
+cut(x, breaks = c(1, 6, 11, 16, 21), include.lowest = TRUE)
+
+cut(x, 
+    breaks = c(1, 6, 11, 16, 21), 
+    include.lowest = TRUE, 
+    labels = c("1st Q", "2nd Q", "3rd Q", "4th Q"))
+
+```
+
+Check the result, when we applied the `right` option parameter. Is it still what we want? 
+
+```{r}
+
+cut(x, 
+    breaks = c(1, 6, 11, 16, 21), 
+    include.lowest = TRUE)
+
+cut(x, 
+    breaks = c(1, 6, 11, 16, 21), 
+    include.lowest = TRUE, 
+    right = FALSE)
+```
+
+If we are not interest about the higher value in the distribution and don't want to specify in the `breaks` parameter vector; 
+
+```{r}
+x <- 1:100
+
+# only assigned pass/fail using 40 as cut-off point
+
+cut(x, 
+    breaks = c(0, 40, Inf), 
+    include.lowest = TRUE, 
+    labels = c("fail", "pass"))
+
+
+```
+
+
+
+# case_when()
+
+We are going to use `case_when()` function from `dplyr` package. 
+
+```{r, error = FALSE}
+library(dplyr)
+```
+
+```{r}
+x <- 1:50
+
+y <- 
+  case_when(
+  x < 5  ~ "< 5",
+  x == 7  ~ "equal to 7",
+  x > 35  ~ "> 35"
+)
+
+
+```
+
+
+```{r}
+# check the result and interpret the result! 
+
+case_when(
+  x %% 35 == 0 ~ "thridy five",
+  x %% 5 == 0 ~ "five",
+  x %% 7 == 0 ~ "seven",
+  TRUE ~ as.character(x)
+)
+
+# what is %%? 
+# ref: https://stackoverflow.com/questions/30257819/what-does-the-double-percentage-sign-mean
+```
+
