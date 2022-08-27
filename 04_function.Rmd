@@ -1,0 +1,75 @@
+---
+title: "dataframe"
+author: "Nicholus Tint Zaw"
+date: "2022-08-14"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# What we are going to cover in this exercise? 
+
+1. Function
+
+
+```{r}
+set.seed(523535)
+
+x <- rnorm(100)
+
+# apply based functions
+median(x)
+mean(x)
+min(x)
+max(x)
+quantile(x, 0.25)
+quantile(x, c(0.25, 0.75))
+summary(x)
+
+```
+
+Now, it is time to create your own function!
+
+
+$\bar{X} = \frac{\sum x_i}{N}$
+
+What input parameter do we need to calculate mean? Of course, the numeric vector, it length (number of observation in the vector), and summation of all numbers from that vector. Right? 
+
+```{r}
+
+my_mean <- function(x){ # x = input parameter - numeric vector 
+  
+  # n = number of observation in vector x 
+  n <- length(x)
+  
+  # summation of vector 
+  sumvect <- sum(x)
+  
+  # mean calculation 
+  cal_mean <- round(sumvect/n, 3)
+  
+  return(cal_mean)
+  
+}
+
+```
+
+
+Now, please working yourself on SD function!
+
+$\sigma = \sqrt{\frac{(\sum x_i - \bar{X})^2}{N}}$
+
+Then, create a function which return the `dataframe` with contain `category variable` as index, `frequency` and `proportion` as column for each respective category. Please use `mtcars` data as sample dataset. 
+
+```{r}
+df <- mtcars
+
+table(df$cyl)
+
+prop.table(table(df$cyl))
+
+```
+
