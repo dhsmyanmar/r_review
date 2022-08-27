@@ -173,6 +173,10 @@ care_data["n_kids"] # base R way
 ## Type issues
 care_data %>% 
   mutate(spending_per_child = n_kids / child_care_costs)
+
+care_data <- care_data %>% 
+  mutate(spending_per_child = n_kids / child_care_costs)
+
 glimpse(care_data)
 
 # logical, also known as booleans
@@ -216,6 +220,13 @@ care_data %>%
   mutate( n_kids = as.integer(n_kids),
           spending_per_kid = child_care_costs / n_kids)
 
+
+care_data <- care_data %>%
+  mutate(random = "don't know")
+
+care_data$test <- "test"
+
+
 ## NAs introduced by coercion
 as.integer("Unknown")
 
@@ -233,6 +244,7 @@ paste0(1L, "ing")
 TRUE + 4
 FALSE + 4
 paste0(FALSE, "?")
+paste0(TRUE, "?")
 mean(c(TRUE, TRUE, FALSE, FALSE, TRUE))
 
 ## `NA`s are contagious, redux.
