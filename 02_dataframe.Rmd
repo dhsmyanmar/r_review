@@ -127,9 +127,9 @@ application of condition in indexing
 
 ```{r}
 # return only the rows of data with cars that have four cylinders
-df[which(df$cyl == 4),]
+df[which(df$cyl == 4),1]
 
-# return the cars with more than 90 horsepower.
+# return the cars withmore than 90 horsepower.
 df[which(df$hp > 90),]
 
 # return the cars with high mpg and low weight.
