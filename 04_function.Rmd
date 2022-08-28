@@ -60,7 +60,35 @@ my_mean <- function(x){ # x = input parameter - numeric vector
 
 Now, please working yourself on SD function!
 
-$\sigma = \sqrt{\frac{(\sum x_i - \bar{X})^2}{N}}$
+$\sigma = \sqrt{\frac{\sum (x_i - \bar{X})^2}{N - 1}}$
+
+
+```{r}
+
+my_sd <- function(x){
+  
+  # n = number of observation in vector x 
+  n <- length(x)
+  
+  # summation of vector 
+  sumvect <- sum(x)
+  
+  # mean calculation 
+  cal_mean <- round(sumvect/n, 3)
+  
+  # variance calculation 
+  cal_var <- sum((x - cal_mean)^2)/(n-1)
+  
+  # sd calculation 
+  cal_sd = sqrt(cal_var)
+  
+  return(cal_sd)
+  
+}
+
+```
+
+
 
 Then, create a function which return the `dataframe` with contain `category variable` as index, `frequency` and `proportion` as column for each respective category. Please use `mtcars` data as sample dataset. 
 
@@ -70,6 +98,33 @@ df <- mtcars
 table(df$cyl)
 
 prop.table(table(df$cyl))
+
+
+my_table <- function(input){
+  
+  frequency <- table(input)
+
+  proportion <- prop.table(table(input)) * 100
+  
+  rpt_tbl <- cbind(frequency, proportion)
+  
+  return(rpt_tbl)
+
+}
+
+my_table(df$cyl)
+
+my_table(df$mpg)
+
+```
+
+
+```{r}
+
+freqency <- table(df$cyl)
+proportion <- prop.table(table(df$cyl))
+result_table <- cbind(freqency, proportion)
+
 
 ```
 
