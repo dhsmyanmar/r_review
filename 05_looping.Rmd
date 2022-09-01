@@ -1,0 +1,255 @@
+---
+title: "looping"
+author: "Nicholus Tint Zaw"
+date: "2022-08-31"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+
+
+# For loops
+
+ref: https://r4ds.had.co.nz/iteration.html#iteration
+
+Let's say we wnat to calculate the mediam value for each vector from the tibble. 
+
+```{r}
+# create tilbble
+
+df <- tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+
+median(df$a)
+
+median(df$b)
+
+median(df$c)
+
+median(df$d)
+
+```
+
+Let apply loop instead of individual command for each vector. 
+
+```{r}
+
+output <- vector("double", ncol(df))  # 1. output
+
+for (i in seq_along(df)) {            # 2. sequence
+  output[[i]] <- median(df[[i]])      # 3. body
+}
+
+output
+
+```
+
+## Let's do some exercise!
+
+1. Compute the mean of every column in `mtcars`. 
+1. Determine the type of each column in `nycflights13::flights`.
+1. Compute the number of unique values in each column of `iris`.
+
+
+
+## Unknown output length 
+
+```{r}
+means <- c(0, 1, 2)
+
+output <- double()
+
+for (i in seq_along(means)) {
+  n <- sample(100, 1)
+  output <- c(output, rnorm(n, means[[i]]))
+}
+
+str(output)
+
+
+```
+
+```{r}
+out <- vector("list", length(means))
+
+for (i in seq_along(means)) {
+  n <- sample(100, 1)
+  out[[i]] <- rnorm(n, means[[i]])
+}
+
+str(out)
+
+
+str(unlist(out))
+
+```
+
+## Unknown sequence length 
+
+```{r}
+
+flip <- function() sample(c("T", "H"), 1)
+
+flips <- 0
+nheads <- 0
+
+while (nheads < 3) {
+  
+  if (flip() == "H") {
+    nheads <- nheads + 1
+  } else {
+    nheads <- 0
+  }
+  
+  flips <- flips + 1
+}
+
+flips
+
+
+
+```
+
+
+## any shortcuts? 
+
+Of course! yes. 
+
+```{r}
+df %>% map_dbl(mean)
+
+df %>% map_dbl(median)
+
+df %>% map_dbl(sd)
+
+```
+Other function from `map` functions from `purrr` package.  
+
+1. map() makes a list.
+1. map_lgl() makes a logical vector.
+1. map_int() makes an integer vector.
+1. map_dbl() makes a double vector.
+1. map_chr() makes a character vector.
+
+```{r}
+
+models <- mtcars %>% 
+  split(.$cyl) %>% 
+  map(function(df) lm(mpg ~ wt, data = df))
+
+
+unique(mtcars$cyl)
+
+summary(models[[1]])
+
+```
+
+
+
+```{r}
+models <- mtcars %>% 
+  split(.$cyl) %>% 
+  map(~lm(mpg ~ wt, data = .))
+
+
+models %>% 
+  map(summary) %>% 
+  map_dbl(~.$r.squared)
+
+
+```
+
+
+## Base R function 
+
+### apply 
+
+```{r}
+
+# create sample data
+sample_matrix <- matrix(C<-(1:10),nrow=3, ncol=10)
+  
+print( "sample matrix:")
+sample_matrix
+  
+# Use apply() function across row to find sum
+print("sum across rows:")
+apply(sample_matrix, 1, sum)
+  
+# use apply() function across column to find mean
+print("mean across columns:")
+apply( sample_matrix, 2, mean)
+
+```
+
+### lapply 
+
+```{r}
+# create sample data
+names <- c("priyank", "abhiraj","pawananjani", "sudhanshu","devraj")
+print( "original data:")
+names
+
+# apply lapply() function
+print("data after lapply():")
+lapply(names, toupper)
+
+
+x <- list(a = 1:10, beta = exp(-3:3), logic = c(TRUE,FALSE,FALSE,TRUE))
+# compute the list mean for each list element
+lapply(x, mean)
+
+lapply(out, mean)
+
+
+```
+
+### sapply
+
+```{r}
+ 
+x1 <- list(
+  c(0.27, 0.37, 0.57, 0.91, 0.20),
+  c(0.90, 0.94, 0.66, 0.63, 0.06), 
+  c(0.21, 0.18, 0.69, 0.38, 0.77)
+)
+x2 <- list(
+  c(0.50, 0.72, 0.99, 0.38, 0.78), 
+  c(0.93, 0.21, 0.65, 0.13, 0.27), 
+  c(0.39, 0.01, 0.38, 0.87, 0.34)
+)
+
+threshold <- function(x, cutoff = 0.8) x[x > cutoff]
+
+x1 %>% sapply(threshold) %>% str()
+
+x2 %>% sapply(threshold) %>% str()
+
+```
+
+
+### tapply 
+
+```{r}
+
+# print head of diamonds dataset
+print(" Head of data:")
+head(diamonds)
+
+
+unique(diamonds$cut)
+
+# apply tapply function to get average price by cut
+print("Average price for each cut of diamond:")
+tapply(diamonds$price, diamonds$cut, mean)
+
+```
+
