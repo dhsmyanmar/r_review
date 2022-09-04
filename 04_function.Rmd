@@ -128,3 +128,37 @@ result_table <- cbind(freqency, proportion)
 
 ```
 
+
+
+## crate table as dataframe (quantile category)
+
+```{r}
+my_qrt_table <- function(input){
+  
+  # calculate quantile values 
+  q1 <- quantile(input, probs = 0.25)
+  q2 <- quantile(input, probs = 0.50)
+  q3 <- quantile(input, probs = 0.75)
+
+  # crate category variable 
+  qrt_cat <- ifelse(input < q1, "1st quarter", 
+                    ifelse(input >= q1 & input < q2, "2nd quarter", 
+                           ifelse(input >= q2 & input < q3, "3rd quarter", 
+                                  ifelse(input >= q3, "4th quarter", NA))))
+  
+  frequency <- table(qrt_cat)
+
+  proportion <- prop.table(table(qrt_cat)) * 100
+  
+  rpt_tbl <- cbind(frequency, proportion)
+  
+  return(rpt_tbl)
+
+}
+
+my_qrt_table(iris$Petal.Width)
+my_qrt_table(mtcars$mpg)
+
+
+```
+
