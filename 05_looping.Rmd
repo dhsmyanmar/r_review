@@ -59,6 +59,44 @@ output
 1. Compute the number of unique values in each column of `iris`.
 
 
+```{r}
+# data type ref: https://www.postgresql.org/docs/current/datatype-numeric.html 
+
+# Compute the mean of every column in `mtcars`. 
+mtcars_means <- vector("double", ncol(mtcars))  # 1. output
+
+for (i in seq_along(mtcars)) {            # 2. sequence
+  mtcars_means[[i]] <- mean(mtcars[[i]])        # 3. body
+}
+
+mtcars_means
+
+
+# Determine the type of each column in `nycflights13::flights`.
+df <- nycflights13::flights
+
+flight_type <- vector("double", ncol(df))  # 1. output
+
+for (i in seq_along(df)) {            # 2. sequence
+  
+  flight_type[[i]] <- typeof(df[[i]])        # 3. body
+}
+
+flight_type
+
+
+# Compute the number of unique values in each column of `iris`.
+iris_unique <- vector("double", ncol(iris))  # 1. output
+
+for (i in seq_along(iris)) {            # 2. sequence
+  iris_unique[[i]] <- length(unique(iris[[i]]))        # 3. body
+}
+
+iris_unique
+
+```
+
+
 
 ## Unknown output length 
 
@@ -117,6 +155,49 @@ flips
 
 
 ```
+
+
+## HW 
+
+dice - roll 
+
+
+looping will run till we got 6, 10 time
+
+pls report - number of rolls, mean value of n rolls results 
+
+
+```{r}
+set.seed(34534)
+
+rolldice <- function() sample(c(1, 2, 3, 4, 5, 6), 1)
+
+output <- double()
+
+nroll <- 0
+nsix <- 0
+
+while (nsix < 10) {
+  
+  result <- rolldice()
+  
+  if (result == 6) {
+    nsix <- nsix + 1
+  } else {
+    nsix <- 0
+  }
+  
+  nroll <- nroll + 1
+  output <- c(output, result)
+}
+
+
+nroll
+summary(output)
+
+
+```
+
 
 
 ## any shortcuts? 
