@@ -161,7 +161,6 @@ flips
 
 dice - roll 
 
-
 looping will run till we got 6, 10 time
 
 pls report - number of rolls, mean value of n rolls results 
@@ -170,21 +169,21 @@ pls report - number of rolls, mean value of n rolls results
 ```{r}
 set.seed(34534)
 
-rolldice <- function() sample(c(1, 2, 3, 4, 5, 6), 1)
+rolldice <- function() sample(c(1:52), 1)
 
 output <- double()
 
 nroll <- 0
 nsix <- 0
 
-while (nsix < 10) {
+while (nsix < 5) {
   
   result <- rolldice()
   
-  if (result == 6) {
+  if (result == 21) {
     nsix <- nsix + 1
   } else {
-    nsix <- 0
+    nsix <- nsix
   }
   
   nroll <- nroll + 1
@@ -194,7 +193,6 @@ while (nsix < 10) {
 
 nroll
 summary(output)
-
 
 ```
 
@@ -227,9 +225,19 @@ models <- mtcars %>%
   map(function(df) lm(mpg ~ wt, data = df))
 
 
+testm <- iris %>%
+  split(.$Species) %>%
+  map(function(df) mean(df$Sepal.Length))
+
 unique(mtcars$cyl)
 
-summary(models[[1]])
+summary(models[[2]])
+
+cyl_6 <- mtcars %>%
+  filter(cyl == 6) 
+
+model1 <- lm(mpg ~ wt, cyl_6)
+summary(model1)
 
 ```
 
@@ -240,11 +248,14 @@ models <- mtcars %>%
   split(.$cyl) %>% 
   map(~lm(mpg ~ wt, data = .))
 
+testm2 <- iris %>% 
+  split(.$Species) %>% 
+  map(~mean(.$Sepal.Length))
+
 
 models %>% 
   map(summary) %>% 
   map_dbl(~.$r.squared)
-
 
 ```
 
@@ -287,6 +298,7 @@ lapply(names, toupper)
 x <- list(a = 1:10, beta = exp(-3:3), logic = c(TRUE,FALSE,FALSE,TRUE))
 # compute the list mean for each list element
 lapply(x, mean)
+
 
 lapply(out, mean)
 
@@ -331,6 +343,14 @@ unique(diamonds$cut)
 # apply tapply function to get average price by cut
 print("Average price for each cut of diamond:")
 tapply(diamonds$price, diamonds$cut, mean)
+
+
+tapply(iris$Sepal.Length, iris$Species, mean)
+
+tapply(iris$Sepal.Length, iris$Species, summary)
+
+tapply(mtcars$mpg, mtcars$cyl, median)
+
 
 ```
 

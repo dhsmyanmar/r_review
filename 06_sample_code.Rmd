@@ -1,0 +1,160 @@
+---
+title: "sample code"
+author: "Nicholus Tint Zaw"
+date: "2022-10-02"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# libraries needed
+library(tidyverse)  # most variable creation here uses tidyverse 
+library(tidyselect) # used to select variables in FP_EVENTS.R
+library(haven)      # used for Haven labeled DHS variables
+library(labelled)   # used for Haven labeled variable creation
+library(expss)      # for creating tables with Haven labeled data
+#library(xlsx)       # for exporting to excel
+library(naniar)     # to use replace_with_na function
+library(here)       # to get R project path
+
+```
+
+
+# Setting Directory 
+```{r}
+rm(list = ls(all = TRUE))
+
+#path for R project
+here()
+
+# select your survey
+
+# KR Files
+KRdatafile <- "kr_child.dta"
+
+# PR Files
+PRdatafile <- "pr_person.dta"
+
+# IR Files
+IRdatafile <- "ir_women.dta"
+
+# MR Files
+MRdatafile <- "mr_men.dta"
+
+# HR Files
+HRdatafile <- "hr_household.dta"
+```
+
+# Open datasets
+```{r}
+IRdata <-  read_dta(here(IRdatafile))
+MRdata <-  read_dta(here(MRdatafile))
+
+```
+
+
+# Variables created in this file:
+
+Please check below link 
+https://github.com/DHSProgram/DHS-Indicators-R/blob/main/Chap15_WE/WE_EMPW.R
+
+
+# Calculation 
+
+```{r}
+# * indicators from IR file
+IRdata <- IRdata %>%
+  mutate(wt = v005/1000000)
+ 
+# *** Decision making ***
+# 
+# //Decides on own health
+IRdata <- IRdata %>%
+  mutate(we_decide_health =
+           case_when(v502==1  ~ v743a )) %>%
+  set_variable_labels(we_decide_health = "Decides on own health care")
+
+# //Decides on household purchases
+IRdata <- IRdata %>%
+  mutate(we_decide_hhpurch =
+           case_when(v502==1  ~ v743b )) %>%
+  set_variable_labels(we_decide_hhpurch = "Decides on large household purchases")
+
+# //Decides on visits
+IRdata <- IRdata %>%
+  mutate(we_decide_visits =
+           case_when(v502==1  ~ v743d )) %>%
+  set_variable_labels(we_decide_visits = "Decides on visits to family or relatives")
+
+# //Decides on own health either alone or jointly
+IRdata <- IRdata %>%
+  mutate(we_decide_health_self =
+           case_when(
+             v502==1 & v743a <3  ~ 1 ,
+             v502==1 & v743a>2 ~ 0)) %>%
+  set_value_labels(we_decide_health_self = c("Yes" = 1, "No"=0  )) %>%
+  set_variable_labels(we_decide_health_self = "Decides on own health care either alone or jointly with partner")
+
+# //Decides on household purchases either alone or jointly
+IRdata <- IRdata %>%
+  mutate(we_decide_hhpurch_self =
+           case_when(
+             v502==1 & v743b <3  ~ 1 ,
+             v502==1 & v743b>2 ~ 0)) %>%
+  set_value_labels(we_decide_hhpurch_self = c("Yes" = 1, "No"=0  )) %>%
+  set_variable_labels(we_decide_hhpurch_self = "Decides on large household purchases either alone or jointly with partner")
+
+# //Decides on visits either alone or jointly
+IRdata <- IRdata %>%
+  mutate(we_decide_visits_self =
+           case_when(
+             v502==1 & v743d <3  ~ 1 ,
+             v502==1 & v743d>2 ~ 0)) %>%
+  set_value_labels(we_decide_visits_self = c("Yes" = 1, "No"=0  )) %>%
+  set_variable_labels(we_decide_visits_self = "Decides on visits to family or relatives either alone or jointly with partner")
+
+# //Decides on all three: health, purchases, and visits  either alone or jointly with partner
+IRdata <- IRdata %>%
+  mutate(we_decide_all =
+           case_when(
+             v502==1 & v743a <3 & v743b <3 & v743d <3  ~ 1 ,
+             v502==1 & (v743a >2 | v743b >2 | v743d >2 ) ~ 0)) %>%
+  set_value_labels(we_decide_all = c("Yes" = 1, "No"=0  )) %>%
+  set_variable_labels(we_decide_all = "Decides on all three: health, purchases, and visits  either alone or jointly with partner")
+
+# //Does not decide on any of the three decisions either alone or jointly with partner
+IRdata <- IRdata %>%
+  mutate(we_decide_none =
+           case_when(
+             v502==1 & v743a <3 | v743b <3 | v743d <3  ~ 0 ,
+             v502==1 & (v743a >2 & v743b >2 & v743d >2 ) ~ 1)) %>%
+  set_value_labels(we_decide_none = c("Yes" = 1, "No"=0  )) %>%
+  set_variable_labels(we_decide_none = "Does not decide on any of the three decisions either alone or jointly with partner")
+
+
+```
+
+
+# Table Creation 
+
+```{r}
+# //Decision making indicators
+
+# For women
+table_temp <-  IRdata %>% 
+  filter(v012>14 & v012<50) %>% 
+  cross_rpct(
+    cell_vars = list(total()),
+    col_vars = list(we_decide_health, we_decide_hhpurch, we_decide_visits),
+    weight = wt,
+    total_label = "Weighted N",
+    total_statistic = "w_cases",
+    total_row_position = c("below"),
+    expss_digits(digits=1)) %>%
+  set_caption("Decision making women")
+
+
+```
+
+
