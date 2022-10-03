@@ -49,7 +49,7 @@ HRdatafile <- "hr_household.dta"
 # Open datasets
 ```{r}
 IRdata <-  read_dta(here(IRdatafile))
-MRdata <-  read_dta(here(MRdatafile))
+#MRdata <-  read_dta(here(MRdatafile))
 
 ```
 
@@ -74,6 +74,21 @@ IRdata <- IRdata %>%
   mutate(we_decide_health =
            case_when(v502==1  ~ v743a )) %>%
   set_variable_labels(we_decide_health = "Decides on own health care")
+
+
+create_we_owc <- function(marital, age, keyvar){
+  
+  we_owc <- ifelse(
+    marital == 1 & age >= 14 & age < 50 & keyvar == 1, 1, 0
+  )
+  return(we_owc)
+  
+}
+
+test <- create_we_owc(IRdata$v502, IRdata$v012, IRdata$v743a)
+
+prop.table(table(test)) * 100
+
 
 # //Decides on household purchases
 IRdata <- IRdata %>%
