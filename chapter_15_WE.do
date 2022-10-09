@@ -97,3 +97,13 @@ replace we_decide_none=1 if (v743a!=1 & v743a!=2) & (v743b!=1 & v743b!=2) & (v74
 label values we_decide_none yesno
 label var we_decide_none "Does not decide on any of the three decisions either alone or jointly with partner"
 
+
+
+// generate table 
+drop if v012<15 | v012>49
+
+gen wt=v005/1000000
+
+tab1 we_decide_health /*we_decide_hhpurch we_decide_visits*/ [iw=wt]
+
+
