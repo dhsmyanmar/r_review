@@ -7,6 +7,7 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+<<<<<<< Updated upstream
 library(tidyverse)
 ```
 
@@ -353,4 +354,17 @@ tapply(mtcars$mpg, mtcars$cyl, median)
 
 
 ```
+=======
+```
+
+
+# What we are going to cover in this exercise? 
+
+1. looping 
+
+
+# setting dataframe 
+
+
+>>>>>>> Stashed changes
 
