@@ -241,6 +241,32 @@ model1 <- lm(mpg ~ wt, cyl_6)
 summary(model1)
 
 ```
+```{r}
+#my exercise
+models <- mtcars %>% 
+  split(.$cyl) %>% 
+  map(function(df) lm(mpg ~ wt, data = df))
+
+
+unique(mtcars$cyl)
+
+summary(models[[1]])
+
+testm<-iris %>%
+  split(.species) %>%
+  map(function(df) mean(df$Sepal.Length))
+
+cyl_6 <- mtcars %>%
+  filter(cyl == 6)
+model1 <-lm(mpg~wt, cyl_6)
+summary(model1)
+
+cyl_4 <- mtcars %>%
+  filter(cyl == 4)
+model2 <-lm(mpg~wt, cyl_4)
+summary(model2)
+
+```
 
 
 
@@ -345,6 +371,7 @@ unique(diamonds$cut)
 print("Average price for each cut of diamond:")
 tapply(diamonds$price, diamonds$cut, mean)
 
+<<<<<<< Updated upstream
 
 tapply(iris$Sepal.Length, iris$Species, mean)
 
@@ -355,6 +382,16 @@ tapply(mtcars$mpg, mtcars$cyl, median)
 
 ```
 =======
+=======
+##my practice/simulation 
+tapply(iris$Sepal.Length, iris$Species, mean)
+tapply(iris$Sepal.Length, iris$Species, summary)
+
+tapply(mtcars$mpg, mtcars$mpg, mean)
+tapply(mtcars$mpg, mtcars$mpg, median)
+
+
+>>>>>>> Stashed changes
 ```
 
 
