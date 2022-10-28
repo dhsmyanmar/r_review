@@ -137,8 +137,6 @@ any(a_vector > 1) # TRUE if any number in a_vector > 1
 
 ```
 
-
-
 # Data Type 
 
 ## data frame 
